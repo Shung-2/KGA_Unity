@@ -10,6 +10,7 @@ public class PlayerFire0923 : MonoBehaviour
     ParticleSystem ps; // 파티클 시스템 
 
     public float throwPower = 15f; // 던지는 힘
+    public int weaponPower = 3; // 총 데미지
 
     void Start()
     {
@@ -31,11 +32,19 @@ public class PlayerFire0923 : MonoBehaviour
 
             if (Physics.Raycast(ray, out hitinfo))
             {
-                bulletEffect.transform.position = hitinfo.point; // 피격 이펙트가 발생할 위치는 레이캐스트가 맞은 위치이다.
+                if(hitinfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy0924"))
+                {
+                    // 데미지 처리
+                    EnemyFSM eFSM = hitinfo.transform.GetComponent<EnemyFSM>();
+                    eFSM.HitEnemy(weaponPower);
+                }
+                else // 그게 아니면 피격 이펙트 플레이
+                {
+                    bulletEffect.transform.position = hitinfo.point; // 피격 이펙트가 발생할 위치는 레이캐스트가 맞은 위치이다.
+                    bulletEffect.transform.forward = hitinfo.normal; // 피격 이펙트의 방향을 포워드 방햐으로 해서 레이가 부딪힌 지점의 법선 벡터와 일치시켜준다.
+                    ps.Play(); // 파티클 재생
+                }
 
-                bulletEffect.transform.forward = hitinfo.normal; // 피격 이펙트의 방향을 포워드 방햐으로 해서 레이가 부딪힌 지점의 법선 벡터와 일치시켜준다.
-                
-                ps.Play(); // 파티클 재생
             }
         }
 

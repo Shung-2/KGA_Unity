@@ -108,7 +108,7 @@
 -define:ENABLE_LEGACY_INPUT_MANAGER
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
--r:"C:/1. Unity Project/KGA/Library/PackageCache/com.unity.visualscripting@1.6.1/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
+-r:"C:/1. Unity Project/KGA/KGA_Unity/Library/PackageCache/com.unity.visualscripting@1.6.1/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2021.1.19f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2021.1.19f1/Editor/Data/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll"
 -r:"C:/Program Files/Unity/Hub/Editor/2021.1.19f1/Editor/Data/Managed/UnityEngine/UnityEditor.dll"
@@ -362,9 +362,11 @@
 "Assets/Script/0914/PlayerMove0914.cs"
 "Assets/Script/0915/BackGround0915.cs"
 "Assets/Script/0916/ScoreManager0916.cs"
+"Assets/Script/0923/BillBoard.cs"
 "Assets/Script/0923/BombAction1.cs"
 "Assets/Script/0923/CamFollow.cs"
 "Assets/Script/0923/CamRotate.cs"
+"Assets/Script/0923/EnemyFSM.cs"
 "Assets/Script/0923/KillEffect.cs"
 "Assets/Script/0923/PlayerFire0923.cs"
 "Assets/Script/0923/PlayerMove0923.cs"
