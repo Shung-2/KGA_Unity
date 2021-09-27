@@ -54,6 +54,7 @@
      <Compile Include="Assets\Script\0908\Player.cs" />
      <Compile Include="Assets\Script\0909\Score.cs" />
      <Compile Include="Assets\Resources\JMO Assets\Cartoon FX\Demo\Assets\CFX_Demo_RandomDir.cs" />
+     <Compile Include="Assets\Script\0923\BillBoard.cs" />
      <Compile Include="Assets\Script\0913\NextScene.cs" />
      <Compile Include="Assets\Resources\AwesomeCartoonPlanes\Scripts\Plane.cs" />
      <Compile Include="Assets\Script\0914\DestoryZone.cs" />
@@ -68,6 +69,7 @@
      <Compile Include="Assets\Script\0923\BombAction1.cs" />
      <Compile Include="Assets\Script\0909\Flappy_Player.cs" />
      <Compile Include="Assets\Script\0916\ScoreManager0916.cs" />
+     <Compile Include="Assets\Script\0923\EnemyFSM.cs" />
      <Compile Include="Assets\Script\0923\PlayerRotate.cs" />
      <Compile Include="Assets\Script\0909\GameManager.cs" />
      <Compile Include="Assets\Resources\JMO Assets\Cartoon FX\Demo\Assets\CFX_Demo_RandomDirectionTranslate.cs" />
@@ -86,8 +88,7 @@
      <Compile Include="Assets\Script\0907\Enemy.cs" />
      <Compile Include="Assets\Script\0914\PlayerFire0914.cs" />
      <Compile Include="Assets\Script\0913\CharacterAni.cs" />
-     <Compile Include="Assets\Script\0923\EnemyFSM.cs" />
-     <Compile Include="Assets\Script\0923\BillBoard.cs" />
+     <Compile Include="Assets\Script\0923\GameManager0927.cs" />
      <None Include="Assets\Resources\JMO Assets\Cartoon FX\Shaders\CFX3 Multiply Color.shader" />
      <None Include="Assets\Resources\JMO Assets\Cartoon FX\CartoonFX Free.txt" />
      <None Include="Assets\Resources\FREE Food Pack\Shaders\Food.shader" />

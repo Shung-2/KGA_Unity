@@ -367,6 +367,7 @@
 "Assets/Script/0923/CamFollow.cs"
 "Assets/Script/0923/CamRotate.cs"
 "Assets/Script/0923/EnemyFSM.cs"
+"Assets/Script/0923/GameManager0927.cs"
 "Assets/Script/0923/KillEffect.cs"
 "Assets/Script/0923/PlayerFire0923.cs"
 "Assets/Script/0923/PlayerMove0923.cs"

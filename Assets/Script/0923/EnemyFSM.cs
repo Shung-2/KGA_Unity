@@ -16,10 +16,10 @@ public class EnemyFSM : MonoBehaviour
     }
 
     EnemyState estate;
-    public float findDistance = 8.0f;    // 플레이어 탐지 범위
+    public float findDistance = 8.0f;   // 플레이어 탐지 범위
     public float attackDistance = 2.0f; // 공격 범위
-    public float moveDistance = 20.0f; // X - 20정도로 줬기 때문에 이 정도로 합시다.
-    public float moveSpeed = 5.0f; // 움직이는 속도
+    public float moveDistance = 20.0f;  // X - 20정도로 줬기 때문에 이 정도로 합시다.
+    public float moveSpeed = 5.0f;      // 움직이는 속도
     float currentTime = 0;
     float attackDelay = 2.0f;
     public int attackPower = 3;
@@ -27,9 +27,11 @@ public class EnemyFSM : MonoBehaviour
     int hp = 18;
 
     Vector3 originalPos;
+    Quaternion originRot;   // 좀비가 가지고 있던 원래 회전값.
     Transform player;
     CharacterController cc;
     public Slider hpSlider;
+    Animator anim;
 
     void Start()
     {
@@ -40,6 +42,11 @@ public class EnemyFSM : MonoBehaviour
         cc = GetComponent<CharacterController>();
 
         originalPos = transform.position; // 에너미가 자신의 처음 위치를 기억한다.
+        originRot = transform.rotation;
+
+        // 애니메이터를 가져온다.
+        anim = transform.GetComponentInChildren<Animator>();
+        //anim = transform.GetComponent<Animator>();
     }
 
     void Idle()
@@ -49,6 +56,11 @@ public class EnemyFSM : MonoBehaviour
         {
             estate = EnemyState.Move;
             print("상태 바뀜 : 기본 > 무브");
+            
+            originRot = transform.rotation;
+
+            // 트리거로 파라미터
+            anim.SetTrigger("IdleToMove");
         }
     }
 
@@ -60,14 +72,16 @@ public class EnemyFSM : MonoBehaviour
             estate = EnemyState.Return;
             print("상태 : 제자리로!");
         }
-
         // 플레이어에게 도달하지 못할 경우
-        if (Vector3.Distance(transform.position, player.position) > attackDistance)
+        else if (Vector3.Distance(transform.position, player.position) > attackDistance)
         {
             // 방향을 구한다
             Vector3 dir = (player.position - transform.position).normalized;
 
             cc.Move(dir * moveSpeed * Time.deltaTime);
+
+            // 좀비도 플레이어를 향해서 방향을 전환한다.
+            transform.forward = dir;
         }
         else // 플레이어에게 닿았을 경우
         {
@@ -76,6 +90,7 @@ public class EnemyFSM : MonoBehaviour
 
             // 누적 시간을 공격 딜레이만큼 미리 진행해놔야 바로 공격을 실행한다.
             currentTime = attackDelay;
+            anim.SetTrigger("MoveToAttackDelay");
         }
     }
 
@@ -92,6 +107,7 @@ public class EnemyFSM : MonoBehaviour
                 player.GetComponent<PlayerMove0923>().DamageAction(attackPower); // 플레이어에게 데미지를 준다.
                 print("상태 바뀜 : 어택");
                 currentTime = 0;
+                anim.SetTrigger("Attack");
             }
         }
         else
@@ -99,6 +115,8 @@ public class EnemyFSM : MonoBehaviour
             estate = EnemyState.Move;
             print("상태 : 다시 쫓음");
             currentTime = 0;
+            anim.SetTrigger("AttackToMove");
+
         }
     }
 
@@ -109,12 +127,18 @@ public class EnemyFSM : MonoBehaviour
         {
             Vector3 dir = (originalPos - transform.position).normalized;
             cc.Move(dir * moveSpeed * Time.deltaTime);
+            
+            // 복귀방향 & 원래 회전값으로 전환.
+            transform.forward = dir;
         }
         else
         {
             hp = maxHp; // 보통 게임에서 제자리로 돌아오면 피가 차는것을 볼 수 있다
             estate = EnemyState.Idle;
+            transform.position = originalPos;
+            transform.rotation = originRot;
             print("상태변환 : Return -> Idle");
+            anim.SetTrigger("MoveToIdle");
         }
     }
 
@@ -185,6 +209,8 @@ public class EnemyFSM : MonoBehaviour
 
     void Update()
     {
+        if (GameManager0927.gm.gState != GameManager0927.GameState.Run) return;
+
         hpSlider.value = (float)hp / (float)maxHp;
         
         switch (estate)

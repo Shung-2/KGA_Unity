@@ -12,7 +12,7 @@ public class PlayerMove0923 : MonoBehaviour
     float yVellocity = 0; // y방향
 
     int maxHp = 30;
-    int hp = 30;
+    public int hp = 30;
 
     public Slider hpSlider;
     public GameObject hitEffect;    // 힛 이펙트
@@ -33,10 +33,6 @@ public class PlayerMove0923 : MonoBehaviour
             // 코루틴으로 피격처리를 해보자
             StartCoroutine(PlayerHitEffect());
         }
-        else
-        {
-
-        }
     }
 
     IEnumerator PlayerHitEffect()
@@ -50,6 +46,9 @@ public class PlayerMove0923 : MonoBehaviour
 
     void Update()
     {
+
+        if (GameManager0927.gm.gState != GameManager0927.GameState.Run) return;
+
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical"); 
 

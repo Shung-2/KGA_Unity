@@ -19,6 +19,8 @@ public class PlayerFire0923 : MonoBehaviour
 
     void Update()
     {
+        if (GameManager0927.gm.gState != GameManager0927.GameState.Run) return;
+
         if (Input.GetMouseButtonDown(0))
         {
             // 레이를 생성해서 쏜다. (레이 발사 위치, 레이 진행 방향)
