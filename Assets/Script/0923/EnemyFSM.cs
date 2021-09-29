@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class EnemyFSM : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class EnemyFSM : MonoBehaviour
     CharacterController cc;
     public Slider hpSlider;
     Animator anim;
+    NavMeshAgent bond;  // 제임스 본드
 
     void Start()
     {
@@ -47,6 +49,8 @@ public class EnemyFSM : MonoBehaviour
         // 애니메이터를 가져온다.
         anim = transform.GetComponentInChildren<Animator>();
         //anim = transform.GetComponent<Animator>();
+
+        bond = GetComponent<NavMeshAgent>();
     }
 
     void Idle()
@@ -75,13 +79,26 @@ public class EnemyFSM : MonoBehaviour
         // 플레이어에게 도달하지 못할 경우
         else if (Vector3.Distance(transform.position, player.position) > attackDistance)
         {
+            // NavMesh를 사용하기때문에 주석처리
             // 방향을 구한다
-            Vector3 dir = (player.position - transform.position).normalized;
+            //Vector3 dir = (player.position - transform.position).normalized;
 
-            cc.Move(dir * moveSpeed * Time.deltaTime);
+            //cc.Move(dir * moveSpeed * Time.deltaTime);
 
             // 좀비도 플레이어를 향해서 방향을 전환한다.
+            //transform.forward = dir;
+
+            bond.isStopped = true;
+            bond.ResetPath();
+
+            // 플레이어를 쫓아오다 공격거리가 되면 선다.
+            bond.stoppingDistance = attackDistance;
+            // 플레이어를 잡자.
+            bond.destination = player.position;
+            //bond.transform.rotation = player.transform.rotation;
+            Vector3 dir = (player.position - transform.position).normalized;
             transform.forward = dir;
+            //transform.rotation = player.rotation;
         }
         else // 플레이어에게 닿았을 경우
         {
@@ -125,14 +142,20 @@ public class EnemyFSM : MonoBehaviour
         // 원래 위치에서 조금이라도 벗어났다면
         if (Vector3.Distance (transform.position, originalPos) > 0.1f)
         {
-            Vector3 dir = (originalPos - transform.position).normalized;
-            cc.Move(dir * moveSpeed * Time.deltaTime);
+            // Vector3 dir = (originalPos - transform.position).normalized;
+            // cc.Move(dir * moveSpeed * Time.deltaTime);
             
-            // 복귀방향 & 원래 회전값으로 전환.
-            transform.forward = dir;
+            // // 복귀방향 & 원래 회전값으로 전환.
+            // transform.forward = dir;
+
+            bond.destination = originalPos;
+            bond.stoppingDistance = 0;
         }
         else
         {
+            bond.isStopped = true;
+            bond.ResetPath();
+
             hp = maxHp; // 보통 게임에서 제자리로 돌아오면 피가 차는것을 볼 수 있다
             estate = EnemyState.Idle;
             transform.position = originalPos;
@@ -159,7 +182,7 @@ public class EnemyFSM : MonoBehaviour
 
     IEnumerator DamageProcess()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         estate = EnemyState.Move;
 
@@ -177,16 +200,22 @@ public class EnemyFSM : MonoBehaviour
 
         hp -= damage;
         
+        // 이거 안해주면 마이클 잭슨 빙의해서 온다.
+        bond.isStopped = true;
+        bond.ResetPath();
+
         if (hp > 0)
         {
             estate = EnemyState.Damaged;
             print("상태 변환 : 피격되었다");
+            anim.SetTrigger("Damaged");
             Damaged();
         }
         else
         {
             estate = EnemyState.Die;
             print("죽었다!");
+            anim.SetTrigger("Die");
             Die();
         }
     }

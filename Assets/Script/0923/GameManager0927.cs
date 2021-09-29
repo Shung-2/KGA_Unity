@@ -69,6 +69,8 @@ public class GameManager0927 : MonoBehaviour
 
             // 게임 오버 텍스트를 띄워준다
             gameText.text = "Game Over";
+            // 혹시 게임오버 됐을 때 움직임 있을수있으니까 멈춰!
+            Player.GetComponentInChildren<Animator>().SetFloat("MoveMotion", 0f);
 
             // 빨간색으로 게임 오버를 띄워준다.
             gameText.color = new Color32(12, 45, 192, 255);

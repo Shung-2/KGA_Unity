@@ -16,12 +16,14 @@ public class PlayerMove0923 : MonoBehaviour
 
     public Slider hpSlider;
     public GameObject hitEffect;    // 힛 이펙트
+    Animator anim;
 
     CharacterController cc;
 
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     public void DamageAction(int damage)
@@ -54,6 +56,10 @@ public class PlayerMove0923 : MonoBehaviour
 
         Vector3 dir = new Vector3(h, 0, v);
         dir = dir.normalized;
+
+        // 중요!
+        //Animator에서 Vecotr 3와 블론드트리를 이용한 움직임 설정
+        anim.SetFloat("MoveMotion", dir.magnitude);
 
         dir = Camera.main.transform.TransformDirection(dir);
         // 카메라 오브젝트 방향으로 치환해준다.

@@ -1,13 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerFire0923 : MonoBehaviour
 {
+
+    enum WeaponMode
+    {
+        Normal,
+        Sniper
+    }
+    
+    WeaponMode wMode;
+
+    bool ZoomMode = false;
+
     public GameObject firePosition; // 폭탄 발사 위치
     public GameObject bombFactory; // 수류탄
     public GameObject bulletEffect; // 총알 피격자국
+    public Text wModeText; // 무기 모드를 표현해줄 텍스트 UI
     ParticleSystem ps; // 파티클 시스템 
+    Animator anim;
+
+    public GameObject[] eff_flush;
 
     public float throwPower = 15f; // 던지는 힘
     public int weaponPower = 3; // 총 데미지
@@ -15,14 +31,34 @@ public class PlayerFire0923 : MonoBehaviour
     void Start()
     {
         ps = bulletEffect.GetComponent<ParticleSystem>();
+        anim = GetComponentInChildren<Animator>();
+        wModeText.text = "Normal Mode";
     }
 
     void Update()
     {
         if (GameManager0927.gm.gState != GameManager0927.GameState.Run) return;
 
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            wMode = WeaponMode.Normal;
+            Camera.main.fieldOfView = 60;
+            wModeText.text = "Normal Mode";
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            wMode = WeaponMode.Sniper;
+            wModeText.text = "Sniper Mode";
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
+            if (anim.GetFloat("MoveMotion") == 0)
+            {
+                anim.SetTrigger("Attack");
+            }
+            
             // 레이를 생성해서 쏜다. (레이 발사 위치, 레이 진행 방향)
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 
@@ -48,22 +84,53 @@ public class PlayerFire0923 : MonoBehaviour
                 }
 
             }
+
+            StartCoroutine(ShootEffectOn(0.05f));
+            
+        }
+
+        IEnumerator ShootEffectOn(float duration)
+        {
+            int num = Random.Range(0, eff_flush.Length - 1);
+
+            eff_flush[num].SetActive(true);
+            yield return new WaitForSeconds(duration);
+            eff_flush[num].SetActive(false);
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            GameObject bomb = Instantiate(bombFactory);
+            switch(wMode)
+            {
+                case WeaponMode.Normal:
+                    GameObject bomb = Instantiate(bombFactory);
 
-            bomb.transform.position = firePosition.transform.position;
+                    bomb.transform.position = firePosition.transform.position;
 
-            Rigidbody rb = bomb.GetComponent<Rigidbody>();
-            rb.AddForce(Camera.main.transform.forward * throwPower, ForceMode.Impulse);
+                    Rigidbody rb = bomb.GetComponent<Rigidbody>();
+                    rb.AddForce(Camera.main.transform.forward * throwPower, ForceMode.Impulse);
 
-            // Force            == 영속적인 힘을 가함. 질량 영향을 받는다
-            // Accelation       == 연속적인 힘을 가함. 질량 영향 받지 않음
-            // Impulse          == 순간적인 힘을 가함. 질량 영향을 받는다.
-            // VelocityChange   == 순간적인 힘을 가함. 질량 영향 받지 않음
+                    // Force            == 영속적인 힘을 가함. 질량 영향을 받는다
+                    // Accelation       == 연속적인 힘을 가함. 질량 영향 받지 않음
+                    // Impulse          == 순간적인 힘을 가함. 질량 영향을 받는다.
+                    // VelocityChange   == 순간적인 힘을 가함. 질량 영향 받지 않음
 
+                break;
+
+                case WeaponMode.Sniper:
+                    if (!ZoomMode)
+                    {
+                        Camera.main.fieldOfView = 15f;
+                        ZoomMode = true;
+                    }
+                    else
+                    {
+                        Camera.main.fieldOfView = 60;
+                        ZoomMode = false;
+                    }
+
+                break;
+            }
         }
     }
 }
